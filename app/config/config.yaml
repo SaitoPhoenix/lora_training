@@ -1,0 +1,37 @@
+# CHANGE THIS TO YOUR OWN DATASET
+TTS_dataset: "MrDragonFox/Elise" # Replace with the Hugging Face dataset ID of your preprocessed Elise dataset
+
+model_name: "canopylabs/orpheus-3b-0.1-pretrained" # Use the pretrained model as your base
+
+# Training Args
+epochs: 3 # Increased epochs for better voice adaptation
+batch_size: 4 # Increased batch size for better training
+number_processes: 1 # Number of processes (adjust for multi-GPU setups with accelerate)
+save_steps: 5000 # Save checkpoint every X steps
+learning_rate: 1.0e-4 # Slightly higher learning rate for LoRA training
+
+# Naming and paths
+save_folder: "checkpoints" # Folder to save checkpoints and the final LoRA
+project_name: "tuning-orpheus" # Weights & Biases project name
+run_name: "elise-lora-tuning" # Weights & Biases run name
+
+# Token configuration
+token_config:
+  tokeniser_length: 128256 # Base tokenizer length
+  start_of_text: 128000 # Start of text token
+  end_of_text: 128009 # End of text token
+  start_of_speech: 128257 # Start of speech token (tokeniser_length + 1)
+  end_of_speech: 128258 # End of speech token (tokeniser_length + 2)
+  start_of_human: 128259 # Start of human token (tokeniser_length + 3)
+  end_of_human: 128260 # End of human token (tokeniser_length + 4)
+  start_of_ai: 128261 # Start of AI token (tokeniser_length + 5)
+  end_of_ai: 128262 # End of AI token (tokeniser_length + 6)
+  pad_token: 128263 # Pad token (tokeniser_length + 7)
+  audio_tokens_start: 128266 # Start of audio tokens (tokeniser_length + 10)
+  max_sequence_length: 1024 # Maximum sequence length for the model
+
+# LoRA configuration
+lora_config:
+  rank: 16 # Reduced rank for better quantization compatibility
+  alpha: 32 # Adjusted alpha relative to rank
+  dropout: 0.05 # Added small dropout for regularization
