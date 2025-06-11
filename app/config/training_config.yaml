@@ -11,10 +11,21 @@ training_config:
   number_processes: 1 # Number of processes (adjust for multi-GPU setups with accelerate)
   save_steps: 5000 # Save checkpoint every X steps
   learning_rate: 1.0e-4 # Slightly higher learning rate for LoRA training
+  logging_steps: 1 # Log training progress every X steps
+  gradient_accumulation_steps: 4 # Number of steps to accumulate gradients
+  warmup_steps: 100 # Number of warmup steps for learning rate scheduler
+  max_grad_norm: 1.0 # Maximum gradient norm for gradient clipping
+  optim: "adamw_torch" # Optimizer to use
+  bf16: true # Enable bfloat16 mixed precision
+  gradient_checkpointing: true # Enable gradient checkpointing to save memory
+  dataloader_pin_memory: true # Pin memory in dataloader for faster data transfer
+  remove_unused_columns: false # Keep all columns in the dataset
+  overwrite_output_dir: true # Overwrite output directory
+  report_to: "wandb" # Report to Weights & Biases
 
 paths:
   save_folder: "../data/checkpoints" # Folder to save checkpoints and the final LoRA
-  wandb_dir: "../data/wandb" # Weights & Biases directory
+  wandb_dir: "../data/" # Weights & Biases directory
 
 wandb_config:
   project_name: "tuning-orpheus" # Weights & Biases project name

@@ -1,4 +1,4 @@
-from config.config_manager import ConfigManager
+from managers.config_manager import ConfigManager
 from managers.model_manager import ModelManager
 from managers.dataset_manager import DatasetManager
 from managers.training_manager import TrainingManager

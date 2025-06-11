@@ -23,25 +23,11 @@ class TrainingManager:
     def _setup_training_args(self):
         """Set up training arguments"""
         logger.info("Setting up training arguments...")
-        return TrainingArguments(
-            overwrite_output_dir=True,
-            num_train_epochs=self.config.training["epochs"],
-            per_device_train_batch_size=self.config.training["batch_size"],
-            logging_steps=1,
-            bf16=True,  # Enable bfloat16 mixed precision
-            output_dir=f"./{self.config.paths['save_folder']}",
-            report_to="wandb",
-            save_steps=self.config.training["save_steps"],
-            remove_unused_columns=False,
-            learning_rate=self.config.training["learning_rate"],
-            gradient_accumulation_steps=4,
-            warmup_steps=100,
-            gradient_checkpointing=True,
-            optim="adamw_torch",
-            max_grad_norm=1.0,
-            dataloader_pin_memory=True,
-            dataloader_num_workers=self.config.training["number_processes"],
-        )
+        # Add output_dir to training args
+        training_args = self.config.training.copy()
+        training_args["output_dir"] = f"./{self.config.paths['save_folder']}"
+
+        return TrainingArguments(**training_args)
 
     def train(self):
         """Run the training process"""
