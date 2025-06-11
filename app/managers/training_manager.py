@@ -68,8 +68,8 @@ class TrainingManager:
         # Start training
         logger.info("Starting training...")
         logger.info(
-            f"Training will be logged to Weights & Biases project: {self.config.paths['project_name']}, "
-            f"run: {self.config.paths['run_name']}"
+            f"Training will be logged to Weights & Biases project: {self.config.wandb['project_name']}, "
+            f"run: {self.config.wandb['run_name']}"
         )
         self.trainer.train()
 
