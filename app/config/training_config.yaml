@@ -3,14 +3,30 @@ dataset:
   TTS_dataset: "MrDragonFox/Elise" # Replace with the Hugging Face dataset ID of your preprocessed Elise dataset
 
 model:
-  base_model: "canopylabs/orpheus-3b-0.1-pretrained" # Use the pretrained model as your base
+  details:
+    base_model: "canopylabs/orpheus-3b-0.1-pretrained" # Use the pretrained model as your base
+    trainable_layers:
+      - "lm_head"
+
+  config:
+    attn_implementation: "flash_attention_2" # Use Flash Attention 2 for better performance
+    torch_dtype: "bfloat16" # Use bfloat16 for mixed precision training
+    device_map: "auto" # Automatically handle device placement
+    resume_download: true # Resume interrupted downloads
+    cache_dir: null # Will be set by ConfigManager
 
 training_config:
-  epochs: 3 # Increased epochs for better voice adaptation
-  batch_size: 4 # Increased batch size for better training
-  number_processes: 1 # Number of processes (adjust for multi-GPU setups with accelerate)
-  save_steps: 5000 # Save checkpoint every X steps
-  learning_rate: 1.0e-4 # Slightly higher learning rate for LoRA training
+  num_train_epochs: 3 # Increased epochs for better voice adaptation
+  per_device_train_batch_size: 4 # Increased batch size for better training
+  dataloader_num_workers: 1 # Number of processes (adjust for multi-GPU setups with accelerate)
+  save_strategy: "steps" # Save based on steps
+  save_steps: 50 # Save and evaluate every 50 steps
+  eval_strategy: "steps" # Evaluate based on steps
+  eval_steps: 50 # Run evaluation every 50 steps
+  load_best_model_at_end: true # Load the best model at the end of training
+  per_device_eval_batch_size: 4 # Batch size for evaluation
+  learning_rate: 5.0e-5 # Slightly lower learning rate for more stable training
+  lr_scheduler_type: "cosine" # Use a cosine learning rate scheduler
   logging_steps: 1 # Log training progress every X steps
   gradient_accumulation_steps: 4 # Number of steps to accumulate gradients
   warmup_steps: 100 # Number of warmup steps for learning rate scheduler
@@ -48,6 +64,21 @@ token_config:
 
 # LoRA configuration
 lora_config:
-  rank: 16 # Reduced rank for better quantization compatibility
-  alpha: 32 # Adjusted alpha relative to rank
-  dropout: 0.05 # Added small dropout for regularization
+  r: 16 # Reduced rank for better quantization compatibility
+  lora_alpha: 32 # Adjusted alpha relative to rank
+  lora_dropout: 0.05 # Added small dropout for regularization
+  target_modules: # Modules to apply LoRA to
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "down_proj"
+    - "up_proj"
+  bias: "none" # Bias type for LoRA layers
+  modules_to_save: null # Modules to save in full precision
+  task_type: "CAUSAL_LM" # Type of task for LoRA
+  use_rslora: true # Whether to use RS-LoRA
+  inference_mode: false # Whether to use inference mode
+  init_lora_weights: "gaussian" # Initialization method for LoRA weights
+  use_dora: false # Whether to use DoRA (Domain-adaptive Rank Adaptation)

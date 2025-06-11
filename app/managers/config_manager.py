@@ -26,16 +26,16 @@ class ConfigManager:
         """Log the main configuration parameters"""
         logger.info("Training configuration:")
         logger.info(f"- Dataset: {self.dataset['TTS_dataset']}")
-        logger.info(f"- Base model: {self.model['base_model']}")
-        logger.info(f"- Epochs: {self.training['epochs']}")
-        logger.info(f"- Batch size: {self.training['batch_size']}")
+        logger.info(f"- Base model: {self.model_details['base_model']}")
+        logger.info(f"- Epochs: {self.training['num_train_epochs']}")
+        logger.info(f"- Batch size: {self.training['per_device_train_batch_size']}")
         logger.info(f"- Learning rate: {self.training['learning_rate']}")
         logger.info(f"- Max sequence length: {self.token['max_sequence_length']}")
 
         logger.info("LoRA configuration:")
-        logger.info(f"- Rank: {self.lora['rank']}")
-        logger.info(f"- Alpha: {self.lora['alpha']}")
-        logger.info(f"- Dropout: {self.lora['dropout']}")
+        logger.info(f"- Rank: {self.lora['r']}")
+        logger.info(f"- Alpha: {self.lora['lora_alpha']}")
+        logger.info(f"- Dropout: {self.lora['lora_dropout']}")
 
     def get_config(self):
         """Get full configuration"""
@@ -62,9 +62,14 @@ class ConfigManager:
         return self.config["paths"].get()
 
     @property
-    def model(self):
+    def model_details(self):
+        """Get model details"""
+        return self.config["model"]["details"].get()
+
+    @property
+    def model_config(self):
         """Get model configuration"""
-        return self.config["model"].get()
+        return self.config["model"]["config"].get()
 
     @property
     def dataset(self):

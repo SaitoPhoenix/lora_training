@@ -42,7 +42,8 @@ class TrainingManager:
         self.trainer = Trainer(
             model=self.model_manager.model,
             args=training_args,
-            train_dataset=self.dataset_manager.dataset,
+            train_dataset=self.dataset_manager.train_dataset,
+            eval_dataset=self.dataset_manager.validation_dataset,
             data_collator=DataCollatorForLanguageModeling(
                 tokenizer=self.model_manager.tokenizer,
                 mlm=False,

@@ -10,7 +10,8 @@ from utils.logger import logger
 class DatasetManager:
     def __init__(self, config_manager):
         self.config = config_manager
-        self.dataset = None
+        self.train_dataset = None
+        self.validation_dataset = None
         self.snac_model = None
         self._initialize_snac()
 
@@ -123,7 +124,7 @@ class DatasetManager:
         }
 
     def load_and_preprocess(self, tokenizer):
-        """Load and preprocess the dataset"""
+        """Load, preprocess, and split the dataset"""
         logger.info(f"Loading dataset {self.config.dataset['TTS_dataset']}...")
         try:
             # Check disk space before downloading
@@ -145,37 +146,56 @@ class DatasetManager:
 
             # Load the dataset
             logger.info("Loading dataset from downloaded files...")
-            self.dataset = load_dataset(
+            dataset = load_dataset(
                 self.config.dataset["TTS_dataset"],
                 split="train",
                 cache_dir=self.config.dataset_cache_dir,
             )
 
             # Verify dataset loaded correctly
-            if self.dataset is None or len(self.dataset) == 0:
+            if dataset is None or len(dataset) == 0:
                 raise ValueError("Dataset loaded but appears to be empty")
 
-            logger.info(
-                f"Successfully loaded dataset with {len(self.dataset)} examples"
-            )
-            logger.info(f"Dataset features: {self.dataset.features}")
+            logger.info(f"Successfully loaded dataset with {len(dataset)} examples")
+            logger.info(f"Dataset features: {dataset.features}")
 
             # Validate raw dataset
-            validate_raw_dataset(self.dataset)
+            validate_raw_dataset(dataset)
+
+            # Split the dataset for training and validation
+            logger.info("Splitting dataset into training and validation sets...")
+            split_dataset = dataset.train_test_split(test_size=0.1, seed=42)
+            self.train_dataset = split_dataset["train"]
+            self.validation_dataset = split_dataset["test"]
+            logger.info(
+                f"Dataset split into {len(self.train_dataset)} training and {len(self.validation_dataset)} validation examples."
+            )
 
             # Process the dataset
-            logger.info("Processing dataset with SNAC tokenization...")
-            self.dataset = self.dataset.map(
+            logger.info("Processing training dataset with SNAC tokenization...")
+            self.train_dataset = self.train_dataset.map(
                 lambda x: self._process_example(x, tokenizer),
                 remove_columns=["audio", "text"],
-                desc="Processing dataset",
+                desc="Processing training set",
+            )
+
+            logger.info("Processing validation dataset with SNAC tokenization...")
+            self.validation_dataset = self.validation_dataset.map(
+                lambda x: self._process_example(x, tokenizer),
+                remove_columns=["audio", "text"],
+                desc="Processing validation set",
             )
 
             # Validate processed dataset
-            validate_processed_dataset(self.dataset, tokenizer)
+            validate_processed_dataset(self.train_dataset, tokenizer)
 
-            logger.info(f"Processed dataset features: {self.dataset.features}")
-            return self.dataset
+            logger.info(
+                f"Processed training dataset features: {self.train_dataset.features}"
+            )
+            logger.info(
+                f"Processed validation dataset features: {self.validation_dataset.features}"
+            )
+            return self.train_dataset, self.validation_dataset
 
         except Exception as e:
             logger.error(f"Error loading dataset: {str(e)}")
