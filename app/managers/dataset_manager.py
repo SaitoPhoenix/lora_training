@@ -34,37 +34,36 @@ class DatasetManager:
         all_codes = []
         for i in range(codes[0].shape[1]):
             all_codes.append(
-                codes[0][0][i].item()
-                + self.config.get("token_config.audio_tokens_start")
+                codes[0][0][i].item() + self.config.token["audio_tokens_start"]
             )
             all_codes.append(
                 codes[1][0][2 * i].item()
-                + self.config.get("token_config.audio_tokens_start")
+                + self.config.token["audio_tokens_start"]
                 + 4096
             )
             all_codes.append(
                 codes[2][0][4 * i].item()
-                + self.config.get("token_config.audio_tokens_start")
+                + self.config.token["audio_tokens_start"]
                 + (2 * 4096)
             )
             all_codes.append(
                 codes[2][0][(4 * i) + 1].item()
-                + self.config.get("token_config.audio_tokens_start")
+                + self.config.token["audio_tokens_start"]
                 + (3 * 4096)
             )
             all_codes.append(
                 codes[1][0][(2 * i) + 1].item()
-                + self.config.get("token_config.audio_tokens_start")
+                + self.config.token["audio_tokens_start"]
                 + (4 * 4096)
             )
             all_codes.append(
                 codes[2][0][(4 * i) + 2].item()
-                + self.config.get("token_config.audio_tokens_start")
+                + self.config.token["audio_tokens_start"]
                 + (5 * 4096)
             )
             all_codes.append(
                 codes[2][0][(4 * i) + 3].item()
-                + self.config.get("token_config.audio_tokens_start")
+                + self.config.token["audio_tokens_start"]
                 + (6 * 4096)
             )
         return all_codes
@@ -93,28 +92,28 @@ class DatasetManager:
 
         # Tokenize text
         text_ids = tokenizer.encode(example["text"], add_special_tokens=True)
-        text_ids.append(self.config.get("token_config.end_of_text"))
+        text_ids.append(self.config.token["end_of_text"])
 
         # Create input sequence
         input_ids = (
-            [self.config.get("token_config.start_of_human")]
+            [self.config.token["start_of_human"]]
             + text_ids
-            + [self.config.get("token_config.end_of_human")]
-            + [self.config.get("token_config.start_of_ai")]
-            + [self.config.get("token_config.start_of_speech")]
+            + [self.config.token["end_of_human"]]
+            + [self.config.token["start_of_ai"]]
+            + [self.config.token["start_of_speech"]]
             + audio_codes
-            + [self.config.get("token_config.end_of_speech")]
-            + [self.config.get("token_config.end_of_ai")]
+            + [self.config.token["end_of_speech"]]
+            + [self.config.token["end_of_ai"]]
         )
 
         # Truncate if too long
-        if len(input_ids) > self.config.get("token_config.max_sequence_length"):
-            input_ids = input_ids[: self.config.get("token_config.max_sequence_length")]
+        if len(input_ids) > self.config.token["max_sequence_length"]:
+            input_ids = input_ids[: self.config.token["max_sequence_length"]]
 
         # Pad if too short
-        if len(input_ids) < self.config.get("token_config.max_sequence_length"):
-            input_ids = input_ids + [self.config.get("token_config.pad_token")] * (
-                self.config.get("token_config.max_sequence_length") - len(input_ids)
+        if len(input_ids) < self.config.token["max_sequence_length"]:
+            input_ids = input_ids + [self.config.token["pad_token"]] * (
+                self.config.token["max_sequence_length"] - len(input_ids)
             )
 
         return {
@@ -125,7 +124,7 @@ class DatasetManager:
 
     def load_and_preprocess(self, tokenizer):
         """Load and preprocess the dataset"""
-        logger.info(f"Loading dataset {self.config.get('dataset.TTS_dataset')}...")
+        logger.info(f"Loading dataset {self.config.dataset['TTS_dataset']}...")
         try:
             # Check disk space before downloading
             if not check_disk_space(self.config.dataset_cache_dir, 328):
@@ -137,7 +136,7 @@ class DatasetManager:
             # Try to download the dataset manually first
             try:
                 download_dataset(
-                    self.config.get("dataset.TTS_dataset"),
+                    self.config.dataset["TTS_dataset"],
                     self.config.dataset_cache_dir,
                 )
             except Exception as e:
@@ -147,7 +146,7 @@ class DatasetManager:
             # Load the dataset
             logger.info("Loading dataset from downloaded files...")
             self.dataset = load_dataset(
-                self.config.get("dataset.TTS_dataset"),
+                self.config.dataset["TTS_dataset"],
                 split="train",
                 cache_dir=self.config.dataset_cache_dir,
             )

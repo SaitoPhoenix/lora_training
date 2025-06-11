@@ -25,64 +25,48 @@ class ConfigManager:
     def _log_config(self):
         """Log the main configuration parameters"""
         logger.info("Training configuration:")
-        logger.info(f"- Dataset: {self.get('TTS_dataset')}")
-        logger.info(f"- Base model: {self.get('model_name')}")
-        logger.info(f"- Epochs: {self.get('epochs')}")
-        logger.info(f"- Batch size: {self.get('batch_size')}")
-        logger.info(f"- Learning rate: {self.get('learning_rate')}")
-        logger.info(
-            f"- Max sequence length: {self.get('token_config.max_sequence_length')}"
-        )
+        logger.info(f"- Dataset: {self.dataset['TTS_dataset']}")
+        logger.info(f"- Base model: {self.model['base_model']}")
+        logger.info(f"- Epochs: {self.training['epochs']}")
+        logger.info(f"- Batch size: {self.training['batch_size']}")
+        logger.info(f"- Learning rate: {self.training['learning_rate']}")
+        logger.info(f"- Max sequence length: {self.token['max_sequence_length']}")
 
         logger.info("LoRA configuration:")
-        logger.info(f"- Rank: {self.get('lora_config.rank')}")
-        logger.info(f"- Alpha: {self.get('lora_config.alpha')}")
-        logger.info(f"- Dropout: {self.get('lora_config.dropout')}")
+        logger.info(f"- Rank: {self.lora['rank']}")
+        logger.info(f"- Alpha: {self.lora['alpha']}")
+        logger.info(f"- Dropout: {self.lora['dropout']}")
 
-    def get(self, key, default=None):
-        """Get a configuration value using dot notation"""
-        try:
-            return self.config[key].get()
-        except confuse.exceptions.NotFoundError:
-            return default
+    def get_config(self):
+        """Get full configuration"""
+        return self.config
 
     @property
-    def token_config(self):
+    def token(self):
         """Get token configuration"""
-        return {
-            "start_of_text": self.get("token_config.start_of_text"),
-            "end_of_text": self.get("token_config.end_of_text"),
-            "start_of_speech": self.get("token_config.start_of_speech"),
-            "end_of_speech": self.get("token_config.end_of_speech"),
-            "start_of_human": self.get("token_config.start_of_human"),
-            "end_of_human": self.get("token_config.end_of_human"),
-            "start_of_ai": self.get("token_config.start_of_ai"),
-            "end_of_ai": self.get("token_config.end_of_ai"),
-            "pad_token": self.get("token_config.pad_token"),
-            "max_sequence_length": self.get("token_config.max_sequence_length"),
-        }
+        return self.config["token_config"].get()
 
     @property
-    def lora_config(self):
+    def lora(self):
         """Get LoRA configuration"""
-        return {
-            "rank": self.get("lora_config.rank"),
-            "alpha": self.get("lora_config.alpha"),
-            "dropout": self.get("lora_config.dropout"),
-        }
+        return self.config["lora_config"].get()
 
     @property
-    def training_config(self):
+    def training(self):
         """Get training configuration"""
-        return {
-            "dataset": self.get("TTS_dataset"),
-            "model_name": self.get("model_name"),
-            "epochs": self.get("epochs"),
-            "batch_size": self.get("batch_size"),
-            "learning_rate": self.get("learning_rate"),
-            "save_steps": self.get("save_steps"),
-            "number_processes": self.get("number_processes"),
-            "save_folder": self.get("save_folder"),
-            "project_name": self.get("project_name"),
-            "run_name": self.get("run_name"),
-        }
+        return self.config["training_config"].get()
+
+    @property
+    def paths(self):
+        """Get paths configuration"""
+        return self.config["paths"].get()
+
+    @property
+    def model(self):
+        """Get model configuration"""
+        return self.config["model"].get()
+
+    @property
+    def dataset(self):
+        """Get dataset configuration"""
+        return self.config["dataset"].get()

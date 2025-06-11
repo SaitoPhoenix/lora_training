@@ -5,7 +5,7 @@ dataset:
 model:
   base_model: "canopylabs/orpheus-3b-0.1-pretrained" # Use the pretrained model as your base
 
-training_args:
+training_config:
   epochs: 3 # Increased epochs for better voice adaptation
   batch_size: 4 # Increased batch size for better training
   number_processes: 1 # Number of processes (adjust for multi-GPU setups with accelerate)

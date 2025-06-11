@@ -15,8 +15,8 @@ class TrainingManager:
         """Initialize Weights & Biases"""
         logger.info("Initializing Weights & Biases...")
         wandb.init(
-            project=self.config.get("paths.project_name"),
-            name=self.config.get("paths.run_name"),
+            project=self.config.paths["project_name"],
+            name=self.config.paths["run_name"],
         )
 
     def _setup_training_args(self):
@@ -24,22 +24,22 @@ class TrainingManager:
         logger.info("Setting up training arguments...")
         return TrainingArguments(
             overwrite_output_dir=True,
-            num_train_epochs=self.config.get("training_args.epochs"),
-            per_device_train_batch_size=self.config.get("training_args.batch_size"),
+            num_train_epochs=self.config.training["epochs"],
+            per_device_train_batch_size=self.config.training["batch_size"],
             logging_steps=1,
             bf16=True,  # Enable bfloat16 mixed precision
-            output_dir=f"./{self.config.get('paths.save_folder')}",
+            output_dir=f"./{self.config.paths['save_folder']}",
             report_to="wandb",
-            save_steps=self.config.get("training_args.save_steps"),
+            save_steps=self.config.training["save_steps"],
             remove_unused_columns=False,
-            learning_rate=self.config.get("training_args.learning_rate"),
+            learning_rate=self.config.training["learning_rate"],
             gradient_accumulation_steps=4,
             warmup_steps=100,
             gradient_checkpointing=True,
             optim="adamw_torch",
             max_grad_norm=1.0,
             dataloader_pin_memory=True,
-            dataloader_num_workers=self.config.get("training_args.number_processes"),
+            dataloader_num_workers=self.config.training["number_processes"],
         )
 
     def train(self):
@@ -67,8 +67,8 @@ class TrainingManager:
         # Start training
         logger.info("Starting training...")
         logger.info(
-            f"Training will be logged to Weights & Biases project: {self.config.get('paths.project_name')}, "
-            f"run: {self.config.get('paths.run_name')}"
+            f"Training will be logged to Weights & Biases project: {self.config.paths['project_name']}, "
+            f"run: {self.config.paths['run_name']}"
         )
         self.trainer.train()
 
@@ -77,6 +77,6 @@ class TrainingManager:
 
     def _save_model(self):
         """Save the trained model"""
-        save_path = f"./{self.config.get('paths.save_folder')}/lora_adapter"
+        save_path = f"./{self.config.paths['save_folder']}/lora_adapter"
         logger.info(f"Saving model to {save_path}...")
         self.model_manager.save_model(save_path)

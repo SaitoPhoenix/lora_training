@@ -16,7 +16,7 @@ class ModelManager:
         """Initialize the tokenizer"""
         logger.info("Loading tokenizer...")
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.config.get("model.base_model"),
+            self.config.model["base_model"],
             resume_download=True,
             cache_dir=self.config.model_cache_dir,
         )
@@ -63,7 +63,7 @@ class ModelManager:
         """Initialize the base model and apply LoRA configuration"""
         logger.info("Loading base model (this might take a while)...")
         self.model = AutoModelForCausalLM.from_pretrained(
-            self.config.get("model.base_model"),
+            self.config.model["base_model"],
             attn_implementation="flash_attention_2",
             torch_dtype=torch.bfloat16,
             device_map="auto",
@@ -82,9 +82,9 @@ class ModelManager:
         """Configure and apply LoRA to the model"""
         logger.info("Configuring LoRA...")
         lora_config = LoraConfig(
-            r=self.config.get("lora_config.rank"),
-            lora_alpha=self.config.get("lora_config.alpha"),
-            lora_dropout=self.config.get("lora_config.dropout"),
+            r=self.config.lora["rank"],
+            lora_alpha=self.config.lora["alpha"],
+            lora_dropout=self.config.lora["dropout"],
             target_modules=[
                 "q_proj",
                 "k_proj",
