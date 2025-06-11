@@ -4,7 +4,7 @@ import requests
 import tempfile
 import os.path as osp
 from tqdm import tqdm
-from utils.logger import get_logger as logger
+from utils.logger import logger
 
 
 def check_disk_space(path, required_size_mb):

@@ -1,7 +1,7 @@
 from transformers import TrainerCallback
 import time
 from datetime import datetime
-from utils.logger import get_logger as logger
+from utils.logger import logger
 
 
 class TrainingProgressCallback(TrainerCallback):

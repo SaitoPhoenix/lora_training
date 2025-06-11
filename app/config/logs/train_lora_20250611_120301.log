@@ -1,3 +1,0 @@
-2025-06-11 12:03:01,871 - utils.logger - INFO - Logging system initialized
-2025-06-11 12:03:01,874 - utils.logger - INFO - Log file: logs/train_lora_20250611_120301.log
-2025-06-11 12:07:20,471 - utils.logger - INFO - Model cache directory: 
