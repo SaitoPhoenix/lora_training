@@ -1,7 +1,7 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model
-from utils.logger import get_logger as logger
+from utils.logger import logger
 
 
 class ModelManager:

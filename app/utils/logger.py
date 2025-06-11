@@ -78,3 +78,4 @@ def get_logger(name=__name__):
 
 # Initialize logging when this module is imported
 setup_logging()
+logger = get_logger()

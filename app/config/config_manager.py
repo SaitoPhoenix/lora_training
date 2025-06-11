@@ -1,6 +1,6 @@
 import confuse
 import os
-from utils.logger import get_logger as logger
+from utils.logger import logger
 
 
 class ConfigManager:

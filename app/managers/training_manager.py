@@ -1,6 +1,6 @@
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
 import wandb
-from utils.logger import get_logger as logger
+from utils.logger import logger
 from callbacks.training_progress import TrainingProgressCallback
 
 

@@ -1,0 +1,16 @@
+2025-06-11 12:08:24,664 - utils.logger - INFO - Logging system initialized
+2025-06-11 12:08:24,666 - utils.logger - INFO - Log file: logs/train_lora_20250611_120824.log
+2025-06-11 12:09:36,508 - utils.logger - INFO - Model cache directory: /home/papa/.cache/huggingface/hub
+2025-06-11 12:09:36,509 - utils.logger - INFO - Dataset cache directory: /home/papa/.cache/huggingface/datasets
+2025-06-11 12:09:36,510 - utils.logger - INFO - Training configuration:
+2025-06-11 12:09:36,510 - utils.logger - INFO - - Dataset: None
+2025-06-11 12:09:36,511 - utils.logger - INFO - - Base model: None
+2025-06-11 12:09:36,512 - utils.logger - INFO - - Epochs: None
+2025-06-11 12:09:36,512 - utils.logger - INFO - - Batch size: None
+2025-06-11 12:09:36,513 - utils.logger - INFO - - Learning rate: None
+2025-06-11 12:09:36,514 - utils.logger - INFO - - Max sequence length: None
+2025-06-11 12:09:36,514 - utils.logger - INFO - LoRA configuration:
+2025-06-11 12:09:36,515 - utils.logger - INFO - - Rank: None
+2025-06-11 12:09:36,516 - utils.logger - INFO - - Alpha: None
+2025-06-11 12:09:36,517 - utils.logger - INFO - - Dropout: None
+2025-06-11 12:09:36,517 - utils.logger - INFO - Loading tokenizer...

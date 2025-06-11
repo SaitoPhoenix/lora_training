@@ -2,9 +2,9 @@ from datasets import load_dataset
 import torch
 import torchaudio.transforms as T
 from snac import SNAC
-from utils.logger import get_logger as logger
 from utils.downloader import check_disk_space, download_dataset
 from utils.validator import validate_raw_dataset, validate_processed_dataset
+from utils.logger import logger
 
 
 class DatasetManager:
