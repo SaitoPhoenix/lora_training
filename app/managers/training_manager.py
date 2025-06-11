@@ -15,8 +15,9 @@ class TrainingManager:
         """Initialize Weights & Biases"""
         logger.info("Initializing Weights & Biases...")
         wandb.init(
-            project=self.config.paths["project_name"],
-            name=self.config.paths["run_name"],
+            project=self.config.wandb["project_name"],
+            name=self.config.wandb["run_name"],
+            dir=self.config.paths["wandb_dir"],
         )
 
     def _setup_training_args(self):

@@ -70,3 +70,8 @@ class ConfigManager:
     def dataset(self):
         """Get dataset configuration"""
         return self.config["dataset"].get()
+
+    @property
+    def wandb(self):
+        """Get wandb configuration"""
+        return self.config["wandb_config"].get()

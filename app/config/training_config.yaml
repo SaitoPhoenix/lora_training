@@ -13,7 +13,10 @@ training_config:
   learning_rate: 1.0e-4 # Slightly higher learning rate for LoRA training
 
 paths:
-  save_folder: "checkpoints" # Folder to save checkpoints and the final LoRA
+  save_folder: "../data/checkpoints" # Folder to save checkpoints and the final LoRA
+  wandb_dir: "../data/wandb" # Weights & Biases directory
+
+wandb_config:
   project_name: "tuning-orpheus" # Weights & Biases project name
   run_name: "elise-lora-tuning" # Weights & Biases run name
 
