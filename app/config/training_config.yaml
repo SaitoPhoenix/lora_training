@@ -1,19 +1,21 @@
 # CHANGE THIS TO YOUR OWN DATASET
-TTS_dataset: "MrDragonFox/Elise" # Replace with the Hugging Face dataset ID of your preprocessed Elise dataset
+dataset:
+  TTS_dataset: "MrDragonFox/Elise" # Replace with the Hugging Face dataset ID of your preprocessed Elise dataset
 
-model_name: "canopylabs/orpheus-3b-0.1-pretrained" # Use the pretrained model as your base
+model:
+  base_model: "canopylabs/orpheus-3b-0.1-pretrained" # Use the pretrained model as your base
 
-# Training Args
-epochs: 3 # Increased epochs for better voice adaptation
-batch_size: 4 # Increased batch size for better training
-number_processes: 1 # Number of processes (adjust for multi-GPU setups with accelerate)
-save_steps: 5000 # Save checkpoint every X steps
-learning_rate: 1.0e-4 # Slightly higher learning rate for LoRA training
+training_args:
+  epochs: 3 # Increased epochs for better voice adaptation
+  batch_size: 4 # Increased batch size for better training
+  number_processes: 1 # Number of processes (adjust for multi-GPU setups with accelerate)
+  save_steps: 5000 # Save checkpoint every X steps
+  learning_rate: 1.0e-4 # Slightly higher learning rate for LoRA training
 
-# Naming and paths
-save_folder: "checkpoints" # Folder to save checkpoints and the final LoRA
-project_name: "tuning-orpheus" # Weights & Biases project name
-run_name: "elise-lora-tuning" # Weights & Biases run name
+paths:
+  save_folder: "checkpoints" # Folder to save checkpoints and the final LoRA
+  project_name: "tuning-orpheus" # Weights & Biases project name
+  run_name: "elise-lora-tuning" # Weights & Biases run name
 
 # Token configuration
 token_config:

@@ -1,0 +1,13 @@
+logging:
+  level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(levelname)s - %(message)s"
+  file_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_dir: "logs"
+  file_name: "train_lora_{timestamp}.log"
+  handlers:
+    console: true
+    file: true
+  library_log_levels:
+    transformers.tokenization_utils: WARNING
+    datasets: WARNING
+    torch: WARNING 
