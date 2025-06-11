@@ -1,5 +1,5 @@
 import numpy as np
-from utils.logger import get_logger as logger
+from utils.logger import logger
 
 
 def validate_raw_dataset(dataset) -> bool:
