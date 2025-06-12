@@ -47,7 +47,11 @@ def setup_logging():
         handlers.append(file_handler)
 
     # Configure root logger
-    logging.basicConfig(level=getattr(logging, config["level"]), handlers=handlers)
+    logging.basicConfig(
+        level=getattr(logging, config["level"]),
+        handlers=handlers,
+        format=config["format"],
+    )
 
     # Set specific log levels for libraries
     for logger_name, level in config["library_log_levels"].items():
