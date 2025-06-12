@@ -5,8 +5,7 @@ dataset:
 model:
   details:
     base_model: "canopylabs/orpheus-3b-0.1-pretrained" # Use the pretrained model as your base
-    trainable_layers:
-      - "lm_head"
+    trainable_layers: [] # Layers that should be trainable
 
   config:
     attn_implementation: "flash_attention_2" # Use Flash Attention 2 for better performance
@@ -16,7 +15,7 @@ model:
     cache_dir: null # Will be set by ConfigManager
 
 training_config:
-  num_train_epochs: 3 # Increased epochs for better voice adaptation
+  num_train_epochs: 10 # Increased epochs for better voice adaptation
   per_device_train_batch_size: 4 # Increased batch size for better training
   dataloader_num_workers: 1 # Number of processes (adjust for multi-GPU setups with accelerate)
   save_strategy: "steps" # Save based on steps
@@ -28,7 +27,7 @@ training_config:
   learning_rate: 5.0e-5 # Slightly lower learning rate for more stable training
   lr_scheduler_type: "cosine" # Use a cosine learning rate scheduler
   logging_steps: 1 # Log training progress every X steps
-  gradient_accumulation_steps: 4 # Number of steps to accumulate gradients
+  gradient_accumulation_steps: 4 # Effective batch size = 16
   warmup_steps: 100 # Number of warmup steps for learning rate scheduler
   max_grad_norm: 1.0 # Maximum gradient norm for gradient clipping
   optim: "adamw_torch" # Optimizer to use
@@ -45,7 +44,7 @@ paths:
 
 wandb_config:
   project_name: "tuning-orpheus" # Weights & Biases project name
-  run_name: "elise-lora-tuning" # Weights & Biases run name
+  run_name: "elise-lora-tuning-10epochs" # Weights & Biases run name
 
 # Token configuration
 token_config:

@@ -65,6 +65,8 @@ class TrainingManager:
 
     def _save_model(self):
         """Save the trained model"""
-        save_path = f"./{self.config.paths['save_folder']}/lora_adapter"
+        save_path = (
+            f"./{self.config.paths['save_folder']}/{self.config.wandb['run_name']}"
+        )
         logger.info(f"Saving model to {save_path}...")
         self.model_manager.save_model(save_path)

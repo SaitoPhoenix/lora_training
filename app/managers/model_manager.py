@@ -1,6 +1,6 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import LoraConfig, get_peft_model
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from utils.logger import logger
 
 
@@ -46,24 +46,19 @@ class ModelManager:
         logger.info(f"Number of special tokens: {len(special_tokens)}")
         logger.info(f"Number of custom tokens: {len(custom_tokens)}")
 
-        if special_tokens:
-            logger.info("\nSpecial tokens found:")
-            for token in special_tokens:
-                logger.info(f"- {token} (ID: {all_tokens[token]})")
-
-        if custom_tokens:
-            logger.info("\nCustom tokens found:")
-            custom_tokens.sort(key=lambda x: int(x.split("_")[-1].rstrip(">")))
-            for token in custom_tokens[:10]:
-                logger.info(f"- {token} (ID: {all_tokens[token]})")
-            if len(custom_tokens) > 10:
-                logger.info(f"... and {len(custom_tokens) - 10} more custom tokens")
-
     def _initialize_model(self):
         """Initialize the base model and apply LoRA configuration"""
         logger.info("Loading base model (this might take a while)...")
         model_args = self.config.model_config.copy()
         model_args["cache_dir"] = self.config.model_cache_dir
+
+        # Explicitly set use_cache based on gradient checkpointing config
+        # This is crucial for compatibility with LoRA and gradient checkpointing
+        if self.config.training.get("gradient_checkpointing"):
+            logger.info("Gradient checkpointing is enabled. Setting use_cache=False.")
+            model_args["use_cache"] = False
+        else:
+            model_args["use_cache"] = True
 
         # Handle different torch dtype options
         dtype_mapping = {
@@ -85,6 +80,17 @@ class ModelManager:
         self.model = AutoModelForCausalLM.from_pretrained(
             self.config.model_details["base_model"], **model_args
         )
+
+        # Enable gradient checkpointing and disable cache for LoRA training
+        if self.config.training.get("gradient_checkpointing"):
+            logger.info(
+                "Gradient checkpointing is enabled. Activating it on the model and disabling cache..."
+            )
+            self.model.gradient_checkpointing_enable()
+            self.model.config.use_cache = False
+        else:
+            self.model.config.use_cache = True
+            logger.info("`use_cache` is enabled for the model.")
 
         # Configure and apply LoRA
         self._configure_lora()
